@@ -12,7 +12,6 @@
   | SID 초기화 | SID 초기화 | SID 초기화 |
   | 설정 초기화 | 기본적인 SID 초기화 작업만 수행 | 시스템의 전체 설정 (사용자, 드라이버 등) 초기화 |
   | 주요 사용 예시 | 서버 배포 및 복제 시 각 서버가 고유한 SID를 갖도록 설정 | 여러 대의 컴퓨터에 동일한 운영 체제나 설정을 복제할 때 |
-
 - HOW ?
   : 관리자 권한으로 PowerShell 실행 -> Script로 Initialization Tool 다운로드 -> MSSQL 설치 여부 체킹 -> 초기화 및 Sysprep 작업 수행
 
@@ -38,21 +37,39 @@
       80: Linux 파일 시스템 (리눅스 부팅 파티션으로 사용될 수 있음)
       8e: LVM 파티션 (LVM,Logical Volume Manager 을 구성하기 위한 파티션 유형)
 
+
 ## 클라우드 환경 내부의 용어 정리
 - VPC 환경 기준 Zone 종속 여부 상품 분류 
   1. 서버 (VM)
     : 가상 머신 (VM)은 물리적인 서버 대신 사용하는 클라우드 상의 가상 컴퓨터
     : 애플리케이션 실행, 웹사이트 호스팅 등 클라우드에서 다양한 작업을 처리
     : Zone 종속 O - **특정 가용 영역(Availability Zone)**에 배치되어야 함 
+    : eg)) AWS: EC2 인스턴스는 Availability Zone 내에서만 실행
+           Google Cloud: VM은 지역(Region) 내에서 특정 Zone에 배치
+           Azure: VM은 특정 Region의 Availability Zone에 배치
+           네이버 클라우드: Compute 인스턴스는 Availability Zone 내에 배치
+
   2. 로드밸런서 (Load Balancer)
     : 여러 서버에 들어오는 트래픽을 균등하게 분배하여 서버 과부하를 방지
     : 여러 서버에 트래픽을 고르게 나누어주는 역할로, 다수의 서버에 요청을 분배
     : Zone 종속 X - **여러 가용 영역(AZ)** 에 걸쳐 트래픽 분배 가능
+    : eg)) AWS: **Elastic Load Balancer(ELB)**는 여러 Availability Zone에 걸쳐 트래픽을 분배
+           Google Cloud: Global Load Balancer는 글로벌 단위로 트래픽을 분배
+           Azure: Azure Load Balancer는 여러 Availability Zone에서 서비스를 제공
+           네이버 클라우드: L7 Load Balancer는 여러 Availability Zone에 걸쳐 트래픽을 분배
   3. 서브넷 (Subnet)
     : 네트워크 내에서 IP 주소 범위를 나누어 관리할 수 있도록 도와주는 역할
     : VPC(Virtual Private Cloud) 내에서 서로 다른 네트워크를 나누어 설정하는 용도로 사용됨
     : Zone 종속 O - 반드시 하나의 가용 영역에 속해야 함
+    : eg)) AWS: VPC 서브넷은 특정 Availability Zone 내에 배치
+           Google Cloud: VPC 서브넷은 지역(Region) 내에 배치되며, 각 서브넷은 특정 Zone에 속함
+           Azure: VNet Subnet은 Region 내에서 특정 Availability Zone에 속함
+           네이버 클라우드: VPC 서브넷은 특정 Availability Zone 내에 배치
   4. NAT Gateway
     : 사설 네트워크에서 인터넷으로 나갈 수 있도록 돕는 다리 역할 함
     : 사설 IP 주소를 가진 서버가 인터넷에 연결될 수 있게 해주는 역할
     : Zone 종속 O - **특정 가용 영역 내에서만** 동작 => 하나의 Zone에 배치된 서버들이 인터넷에 접근 가능
+    : eg)) AWS: NAT Gateway는 Availability Zone에 배치
+           Google Cloud: NAT Gateway는 **VPC의 특정 지역(Region)**에 배치
+           Azure: NAT Gateway는 Region 내의 Availability Zone에 배치
+           네이버 클라우드: NAT Gateway는 특정 Availability Zone에 배치
